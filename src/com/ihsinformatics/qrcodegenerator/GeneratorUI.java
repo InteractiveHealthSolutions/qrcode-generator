@@ -1,10 +1,14 @@
 /**
- * UI class to display form
- */
-
-/*
- * Created  on Mon Feb 16 11:11:46 PKT 2015
- */
+ * Copyright(C) ${year} Interactive Health Solutions, Pvt. Ltd.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License (GPLv3), or any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Interactive Health Solutions, info@ihsinformatics.com
+ * You can also access the license on the internet at the address: http://www.gnu.org/licenses/gpl-3.0.html
+ * Interactive Health Solutions, hereby disclaims all copyright interest in this program written by the contributors.
+ * Contributors: ${user}
+*/
 package com.ihsinformatics.qrcodegenerator;
 
 import java.awt.*;
@@ -116,22 +120,22 @@ public class GeneratorUI extends JFrame implements ActionListener,ItemListener {
 		dateJCheckBox = new JCheckBox();
 		label3 = new JLabel();
 		label4 = new JLabel();
-		dateFormatJComboBox = new JComboBox<>();
+		dateFormatJComboBox = new JComboBox<String>();
 		dateTextField = new JTextField();
 		label5 = new JLabel();
 		serialFromSpinner = new JSpinner();
 		label6 = new JLabel();
 		label7 = new JLabel();
 		serialToSpinner = new JSpinner();
-		columnLimitJComboBox = new JComboBox<>();
-		rowLimitJComboBox = new JComboBox<>();
+		columnLimitJComboBox = new JComboBox<String>();
+		rowLimitJComboBox = new JComboBox<String>();
 		label8 = new JLabel();
 		label9 = new JLabel();
 		label10 = new JLabel();
 		saveToButton = new JButton();
 		generatorButton = new JButton();
 		label11 = new JLabel();
-		repeatLimitJComboBox = new JComboBox<>();
+		repeatLimitJComboBox = new JComboBox<String>();
 		label12 = new JLabel();
 		label13 = new JLabel();
 
@@ -171,7 +175,7 @@ public class GeneratorUI extends JFrame implements ActionListener,ItemListener {
 
 		//---- dateFormatJComboBox ----
 		dateFormatJComboBox.setFont(dateFormatJComboBox.getFont().deriveFont(dateFormatJComboBox.getFont().getStyle() & ~Font.BOLD));
-		dateFormatJComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
+		dateFormatJComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {
 			"yyMMdd",
 			"yyMM",
 			"yy"
@@ -201,7 +205,7 @@ public class GeneratorUI extends JFrame implements ActionListener,ItemListener {
 		serialToSpinner.setFont(serialToSpinner.getFont().deriveFont(serialToSpinner.getFont().getStyle() & ~Font.BOLD));
 
 		//---- columnLimitJComboBox ----
-		columnLimitJComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
+		columnLimitJComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {
 			"1",
 			"2",
 			"3",
@@ -211,7 +215,7 @@ public class GeneratorUI extends JFrame implements ActionListener,ItemListener {
 		columnLimitJComboBox.setSelectedIndex(3);
 
 		//---- rowLimitJComboBox ----
-		rowLimitJComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
+		rowLimitJComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {
 			"1",
 			"2",
 			"3",
@@ -249,7 +253,7 @@ public class GeneratorUI extends JFrame implements ActionListener,ItemListener {
 		label11.setFont(label11.getFont().deriveFont(label11.getFont().getStyle() | Font.BOLD));
 
 		//---- repeatLimitJComboBox ----
-		repeatLimitJComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
+		repeatLimitJComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {
 			"1",
 			"2",
 			"4"
