@@ -8,7 +8,7 @@
  * You can also access the license on the internet at the address: http://www.gnu.org/licenses/gpl-3.0.html
  * Interactive Health Solutions, hereby disclaims all copyright interest in this program written by the contributors.
  * Contributors: ${user}
-*/
+ */
 package com.ihsinformatics.qrcodegenerator;
 
 import java.text.ParseException;
@@ -18,27 +18,27 @@ import java.util.Calendar;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
 /**
- * @author muhammad.ahmed@ihsinformatics.com
- *  Created on Feb 16, 2015
+ * @author muhammad.ahmed@ihsinformatics.com Created on Feb 16, 2015
  */
 public class DateLabelFormatter extends AbstractFormatter {
 
+    private static final long serialVersionUID = -6308418334123886501L;
     private String datePattern = "yyyy-MM-dd";
     private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 
     @Override
     public Object stringToValue(String text) throws ParseException {
-        return dateFormatter.parseObject(text);
+	return dateFormatter.parseObject(text);
     }
 
     @Override
     public String valueToString(Object value) throws ParseException {
-        if (value != null) {
-            Calendar cal = (Calendar) value;
-            return dateFormatter.format(cal.getTime());
-        }
+	if (value != null) {
+	    Calendar cal = (Calendar) value;
+	    return dateFormatter.format(cal.getTime());
+	}
 
-        return "";
+	return "";
     }
 
 }
