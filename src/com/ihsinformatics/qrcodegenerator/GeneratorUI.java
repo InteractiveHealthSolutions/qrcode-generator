@@ -174,12 +174,12 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 		label1.setFont(label1.getFont().deriveFont(label1.getFont().getSize() + 16f));
 
 		//---- label2 ----
-		label2.setText("Prefix  (two digits comma separated):");
+		label2.setText("Prefix  :");
 		label2.setFont(label2.getFont().deriveFont(label2.getFont().getStyle() | Font.BOLD));
 
 		//---- locationIdTextField ----
 		locationIdTextField.setText("01");
-		locationIdTextField.setToolTipText("Prefix IDs separated by comma, like 01,02,03");
+		locationIdTextField.setToolTipText("Prefix  : ");
 		locationIdTextField.setFont(locationIdTextField.getFont().deriveFont(locationIdTextField.getFont().getStyle() & ~Font.BOLD));
 
 		//---- dateJCheckBox ----
