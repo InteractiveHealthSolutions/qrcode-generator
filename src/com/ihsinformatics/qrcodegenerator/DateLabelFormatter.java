@@ -7,7 +7,11 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Interactive Health Solutions, info@ihsinformatics.com
  * You can also access the license on the internet at the address: http://www.gnu.org/licenses/gpl-3.0.html
  * Interactive Health Solutions, hereby disclaims all copyright interest in this program written by the contributors.
+<<<<<<< HEAD
  * Contributors: muhammad.ahmed@ihsinformatics.com
+=======
+ * Contributors: ${user}
+>>>>>>> mystream/master
  */
 package com.ihsinformatics.qrcodegenerator;
 
@@ -39,5 +43,8 @@ public class DateLabelFormatter extends AbstractFormatter {
 
 		return "";
 	}
+
+
+
 
 }
