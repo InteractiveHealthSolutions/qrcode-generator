@@ -283,11 +283,11 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 		serialLimitJComboBox.setModel(new DefaultComboBoxModel(new String[] {
 			"2",
 			"3",
-			"4",
+			"4"/*,
 			"5",
 			"6",
 			"7",
-			"8"
+			"8"*/
 		}));
 		serialLimitJComboBox.setFont(serialLimitJComboBox.getFont().deriveFont(serialLimitJComboBox.getFont().getStyle() & ~Font.BOLD));
 
@@ -604,7 +604,7 @@ System.out.println(dateJCheckBox.isSelected());
 				serialToSpinner.setValue(9999);
 				defaultRange=9999;
 			}
-			else if(serialLimitJComboBox.getSelectedItem().toString().equalsIgnoreCase("5"))
+		/*	else if(serialLimitJComboBox.getSelectedItem().toString().equalsIgnoreCase("5"))
 			{
 				serialToSpinner.setValue(99999);
 				defaultRange=99999;
@@ -623,7 +623,7 @@ System.out.println(dateJCheckBox.isSelected());
 			{
 				serialToSpinner.setValue(99999999);
 				defaultRange=99999999;
-			}
+			}*/
 		}
 
 	}
