@@ -18,6 +18,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +36,10 @@ import org.jdatepicker.util.JDatePickerUtil;
 
 import com.ihsinformatics.qrcodegenerator.ChecksumHandler;
 import com.ihsinformatics.qrcodegenerator.QrCodeHandler;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
 
 /**
  * @author muhammad.ahmed@ihsinformatics.com
@@ -43,8 +48,10 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 
 	// declaration of variables
 	private static final long serialVersionUID = 4652592648303169985L;
-	private static final int size = 240;
-	private static int columnLimit = 4;
+//	private static final int size = 140;
+	private static final int width = 140;
+	private static final int height = 140;
+	private static int columnLimit = 2;
 	private static int pageLimit = 4;
 	private static int defaultRange = 99;
 	private static final String fileType = "png";
@@ -283,11 +290,11 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 		serialLimitJComboBox.setModel(new DefaultComboBoxModel(new String[] {
 			"2",
 			"3",
-			"4"/*,
+			"4",
 			"5",
 			"6",
 			"7",
-			"8"*/
+			"8"
 		}));
 		serialLimitJComboBox.setFont(serialLimitJComboBox.getFont().deriveFont(serialLimitJComboBox.getFont().getStyle() & ~Font.BOLD));
 
@@ -298,7 +305,7 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 		label28.setText("Copyright(C) 2015 Interactive Health Solutions, Pvt. Ltd.");
 
 		//---- columnLimitSpinner ----
-		columnLimitSpinner.setModel(new SpinnerNumberModel(4, 1, 4, 1));
+		columnLimitSpinner.setModel(new SpinnerNumberModel(2, 1, 2, 1));
 
 		//---- rowLimitSpinner ----
 		rowLimitSpinner.setModel(new SpinnerNumberModel(8, 1, 8, 1));
@@ -482,9 +489,11 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 		ArrayList<String> files = codeGenerator(locationText, from, to,
 				dateJCheckBox.isSelected());
 		// Merge images one file
-		BufferedImage page = new BufferedImage(size /** columnLimit*/, size
-				/** pageLimit*/, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage page = new BufferedImage((width+300) * columnLimit, height
+				* pageLimit, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = page.createGraphics();
+		
+
 		int cnt = 1, i = 0, j = 0, x = 0, y = 0;
 		for (String file : files) {
 
@@ -499,19 +508,45 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 					graphics.dispose();
 					File qrFile = new File(directory + locationText + '-'
 							+ cnt++ + ".png");
+					  Document document = new Document();
+					  String output=directory + locationText + '-'
+								+ cnt++ + ".pdf";
+					  String input=qrFile.getAbsolutePath();
 					try {
 						ImageIO.write(page, fileType, qrFile);
-						page = new BufferedImage(size * columnLimit, size
+						page = new BufferedImage((width+300) * columnLimit , height
 								* pageLimit, BufferedImage.TYPE_INT_ARGB);
 						graphics = page.createGraphics();
+						
+						
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				}
+					
+					 FileOutputStream fos = new FileOutputStream(output);
+				      PdfWriter writer;
+					try {
+						document.setPageSize(new com.itextpdf.text.Rectangle(920.0f, 1200.0f));//new Dimension(880,1120)
+					    //  System.out.println(document.getPageSize());
+					      
+						writer = PdfWriter.getInstance(document, fos);
+						 writer.open();
+					      document.open();
+						      //document.
+						      document.add(com.itextpdf.text.Image.getInstance(input));
+					      document.close();
+					      writer.close();	
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				     			}
 
 				for (int k = 0; k < columnDiffer; k++) {
-					x = (size * i++);
-					y = (size * j);
+					//if(k==0) {x = ((width+200) *	i++);}
+					//else{
+					x = ((width +300)*	i++);//100;}
+					y = (height * j);
 					BufferedImage image = ImageIO.read(new File(file));
 					graphics.drawImage(image, x, y, null);
 				}
@@ -604,7 +639,7 @@ System.out.println(dateJCheckBox.isSelected());
 				serialToSpinner.setValue(9999);
 				defaultRange=9999;
 			}
-		/*	else if(serialLimitJComboBox.getSelectedItem().toString().equalsIgnoreCase("5"))
+			else if(serialLimitJComboBox.getSelectedItem().toString().equalsIgnoreCase("5"))
 			{
 				serialToSpinner.setValue(99999);
 				defaultRange=99999;
@@ -623,7 +658,7 @@ System.out.println(dateJCheckBox.isSelected());
 			{
 				serialToSpinner.setValue(99999999);
 				defaultRange=99999999;
-			}*/
+			}
 		}
 
 	}
@@ -685,7 +720,7 @@ System.out.println(dateJCheckBox.isSelected());
 					String filePath = directory + qrCodeText.replaceAll("[$&+,:;=?@/#|]","-") + ".png";
 					files.add(filePath);
 					System.out.println(filePath);
-					QrCodeHandler.createQRImage(filePath, qrCodeText, size,
+					QrCodeHandler.createQRImage(filePath, qrCodeText, width,height  ,
 							fileType);
 					System.out.println(qrCodeText + "\t");
 				} catch (Exception e) {
@@ -702,7 +737,7 @@ System.out.println(dateJCheckBox.isSelected());
 							+ ChecksumHandler.calculateLuhnDigit(qrCodeText);
 					String filePath = directory + qrCodeText + ".png";
 					files.add(filePath);
-					QrCodeHandler.createQRImage(filePath, qrCodeText, size,
+					QrCodeHandler.createQRImage(filePath, qrCodeText, width,height,
 							fileType);
 					System.out.println(qrCodeText + "\t");
 				} catch (Exception e) {

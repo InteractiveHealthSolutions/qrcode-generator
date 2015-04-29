@@ -86,7 +86,7 @@ public final class QRCodeMain {
 		                    	SwingUtilities.updateComponentTreeUI(screen);
 		                    }
 		                });
-		                java.lang.Thread.sleep(100);
+		                java.lang.Thread.sleep(0);
 		            } catch (InterruptedException e) {
 		                JOptionPane.showMessageDialog(screen, e.getMessage());
 		            }

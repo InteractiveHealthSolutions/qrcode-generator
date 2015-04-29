@@ -34,7 +34,7 @@ public class ChecksumHandler {
      */
     public static int calculateLuhnDigit(String idWithoutCheckdigit)
 	    throws InvalidFormatException {
-	String validChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVYWXZ_";
+	String validChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVYWXZ_-";
 	idWithoutCheckdigit = idWithoutCheckdigit.trim().toUpperCase();
 	int sum = 0;
 	for (int i = 0; i < idWithoutCheckdigit.length(); i++) {
