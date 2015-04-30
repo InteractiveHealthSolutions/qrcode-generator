@@ -33,7 +33,7 @@ public final class QRCodeMain {
 	private  static SplashScreen screen;
 	public static void main(String[] args) {
 		
-		 v = Version.valueOf("0.1.0-preAlpha.1+build.1");
+		 v = Version.valueOf("1.3.0-preAlpha");
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				//SplashScreen splash=new SplashScreen(imageIcon);

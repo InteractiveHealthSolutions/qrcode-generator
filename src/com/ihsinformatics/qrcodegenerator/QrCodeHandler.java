@@ -48,7 +48,7 @@ public class QrCodeHandler {
 		BarcodeFormat.QR_CODE, width, height, hintMap);
 
 	// Make the BufferedImage that are to hold the QRCode
-	int matrixWidth = byteMatrix.getWidth()+300;
+	int matrixWidth = byteMatrix.getWidth();//+300;
 	int matrixHeight = byteMatrix.getHeight();
 	BufferedImage image = new BufferedImage(matrixWidth, matrixHeight,
 		BufferedImage.TYPE_INT_RGB);
@@ -64,18 +64,21 @@ public class QrCodeHandler {
 	//System.out.println(codeRepeatation);
 	//qrCodeText.substring(beginIndex, endIndex);
 	graphics.setColor(Color.BLACK);
-	graphics.drawString(qrCodeText, 70, height -10);
-	
+	graphics.drawString(qrCodeText, 10, height -10);
+	/*
 	graphics.drawString("Name:_____________________________", 160, 40);
 	graphics.drawString("Sputum Collection Date:______________", 160, 60);
 	graphics.drawString("Sputum Submission Form Submitted \u2610", 160, 80);
 	graphics.drawString("Sputum Results Submitted \u2610", 160, 100);
-	//graphics.
+*/	graphics.drawLine(0, 0, 0, matrixHeight + 5);
+	graphics.drawLine(matrixWidth+5, 0, matrixWidth+5, matrixHeight + 5);
+	graphics.drawLine(0, 0, matrixWidth+5, 0);
+	graphics.drawLine(0, 0, 0, matrixHeight + 5);
 	// Paint and save the image using the ByteMatrix
 	for (int i = 0; i < matrixHeight; i++) {
 	    for (int j = 0; j < matrixHeight; j++) {
 		if (byteMatrix.get(i, j)) {
-		    graphics.fillRect((i+40), j, 1, 1);
+		    graphics.fillRect((i/*+40*/), j, 1, 1);
 		}
 	    }
 

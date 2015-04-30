@@ -305,7 +305,7 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 		label28.setText("Copyright(C) 2015 Interactive Health Solutions, Pvt. Ltd.");
 
 		//---- columnLimitSpinner ----
-		columnLimitSpinner.setModel(new SpinnerNumberModel(2, 1, 2, 1));
+		columnLimitSpinner.setModel(new SpinnerNumberModel(4, 1, 4, 1));
 
 		//---- rowLimitSpinner ----
 		rowLimitSpinner.setModel(new SpinnerNumberModel(8, 1, 8, 1));
@@ -489,7 +489,7 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 		ArrayList<String> files = codeGenerator(locationText, from, to,
 				dateJCheckBox.isSelected());
 		// Merge images one file
-		BufferedImage page = new BufferedImage((width+300) * columnLimit, height
+		BufferedImage page = new BufferedImage((width/*+300*/) * columnLimit, height
 				* pageLimit, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = page.createGraphics();
 		
@@ -514,7 +514,7 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 					  String input=qrFile.getAbsolutePath();
 					try {
 						ImageIO.write(page, fileType, qrFile);
-						page = new BufferedImage((width+300) * columnLimit , height
+						page = new BufferedImage((width/*+300*/) * columnLimit , height
 								* pageLimit, BufferedImage.TYPE_INT_ARGB);
 						graphics = page.createGraphics();
 						
@@ -526,7 +526,7 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 					 FileOutputStream fos = new FileOutputStream(output);
 				      PdfWriter writer;
 					try {
-						document.setPageSize(new com.itextpdf.text.Rectangle(920.0f, 1200.0f));//new Dimension(880,1120)
+						document.setPageSize(new com.itextpdf.text.Rectangle((float)(560+40), (float)(1120+40)));//new Dimension(880,1120)
 					    //  System.out.println(document.getPageSize());
 					      
 						writer = PdfWriter.getInstance(document, fos);
@@ -545,7 +545,7 @@ public class GeneratorUI extends JFrame implements ActionListener, ItemListener 
 				for (int k = 0; k < columnDiffer; k++) {
 					//if(k==0) {x = ((width+200) *	i++);}
 					//else{
-					x = ((width +300)*	i++);//100;}
+					x = ((width /*+300*/)*	i++);//100;}
 					y = (height * j);
 					BufferedImage image = ImageIO.read(new File(file));
 					graphics.drawImage(image, x, y, null);
