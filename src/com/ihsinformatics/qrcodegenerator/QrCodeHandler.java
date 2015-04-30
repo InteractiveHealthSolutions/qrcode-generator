@@ -70,7 +70,7 @@ public class QrCodeHandler {
 	graphics.drawString("Sputum Collection Date:______________", 160, 60);
 	graphics.drawString("Sputum Submission Form Submitted \u2610", 160, 80);
 	graphics.drawString("Sputum Results Submitted \u2610", 160, 100);
-	
+	//graphics.
 	// Paint and save the image using the ByteMatrix
 	for (int i = 0; i < matrixHeight; i++) {
 	    for (int j = 0; j < matrixHeight; j++) {
