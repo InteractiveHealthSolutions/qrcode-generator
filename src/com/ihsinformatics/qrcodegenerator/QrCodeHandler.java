@@ -57,7 +57,7 @@ public class QrCodeHandler {
 	graphics.setColor(Color.WHITE);
 	graphics.fillRect(0, 0, matrixWidth+5 , matrixHeight + 5);
 	
-	graphics.setFont(graphics.getFont().deriveFont(14f));
+	graphics.setFont(graphics.getFont().deriveFont(10f));
 	//System.out.println(graphics.getFont().canDisplayUpTo(qrCodeText));;
 	
 	double codeRepeatation=qrCodeText.length()/11.0;
