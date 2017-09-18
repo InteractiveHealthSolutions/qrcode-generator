@@ -37,54 +37,56 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
  */
 public class QrCodeHandler {
 
-    public static void createQRImage(String filePath, String qrCodeText,
-	    int width,int height, String fileType) throws WriterException, IOException {
-	// Create the ByteMatrix for the QR-Code that encodes the given String
-	Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<EncodeHintType, ErrorCorrectionLevel>();
-	hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+	public static void createQRImage(String filePath, String qrCodeText,
+			int width, int height, String fileType) throws WriterException,
+			IOException {
+		// Create the ByteMatrix for the QR-Code that encodes the given String
+		Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<EncodeHintType, ErrorCorrectionLevel>();
+		hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
-	QRCodeWriter qrCodeWriter = new QRCodeWriter();
-	BitMatrix byteMatrix = qrCodeWriter.encode(qrCodeText,
-		BarcodeFormat.QR_CODE, width, height, hintMap);
+		QRCodeWriter qrCodeWriter = new QRCodeWriter();
+		BitMatrix byteMatrix = qrCodeWriter.encode(qrCodeText,
+				BarcodeFormat.QR_CODE, width, height, hintMap);
 
-	// Make the BufferedImage that are to hold the QRCode
-	int matrixWidth = byteMatrix.getWidth();//+300;
-	int matrixHeight = byteMatrix.getHeight();
-	BufferedImage image = new BufferedImage(matrixWidth, matrixHeight,
-		BufferedImage.TYPE_INT_RGB);
-	image.createGraphics();
-	Graphics2D graphics = (Graphics2D) image.getGraphics();
-	graphics.setColor(Color.WHITE);
-	graphics.fillRect(0, 0, matrixWidth+5 , matrixHeight + 5);
-	
-	graphics.setFont(graphics.getFont().deriveFont(10f));
-	//System.out.println(graphics.getFont().canDisplayUpTo(qrCodeText));;
-	
-	double codeRepeatation=qrCodeText.length()/11.0;
-	//System.out.println(codeRepeatation);
-	//qrCodeText.substring(beginIndex, endIndex);
-	graphics.setColor(Color.BLACK);
-	graphics.drawString(qrCodeText, 10, height -10);
-	/*
-	graphics.drawString("Name:_____________________________", 160, 40);
-	graphics.drawString("Sputum Collection Date:______________", 160, 60);
-	graphics.drawString("Sputum Submission Form Submitted \u2610", 160, 80);
-	graphics.drawString("Sputum Results Submitted \u2610", 160, 100);
-*/	graphics.drawLine(0, 0, 0, matrixHeight + 5);
-	graphics.drawLine(matrixWidth+5, 0, matrixWidth+5, matrixHeight + 5);
-	graphics.drawLine(0, 0, matrixWidth+5, 0);
-	graphics.drawLine(0, 0, 0, matrixHeight + 5);
-	// Paint and save the image using the ByteMatrix
-	for (int i = 0; i < matrixHeight; i++) {
-	    for (int j = 0; j < matrixHeight; j++) {
-		if (byteMatrix.get(i, j)) {
-		    graphics.fillRect((i/*+40*/), j, 1, 1);
+		// Make the BufferedImage that are to hold the QRCode
+		int matrixWidth = byteMatrix.getWidth();// +300;
+		int matrixHeight = byteMatrix.getHeight();
+		BufferedImage image = new BufferedImage(matrixWidth, matrixHeight,
+				BufferedImage.TYPE_INT_RGB);
+		image.createGraphics();
+		Graphics2D graphics = (Graphics2D) image.getGraphics();
+		graphics.setColor(Color.WHITE);
+		graphics.fillRect(0, 0, matrixWidth + 5, matrixHeight + 5);
+
+		graphics.setFont(graphics.getFont().deriveFont(10f));
+		// System.out.println(graphics.getFont().canDisplayUpTo(qrCodeText));;
+
+		double codeRepeatation = qrCodeText.length() / 11.0;
+		// System.out.println(codeRepeatation);
+		// qrCodeText.substring(beginIndex, endIndex);
+		graphics.setColor(Color.BLACK);
+		graphics.drawString(qrCodeText, 10, height - 10);
+		/*
+		 * graphics.drawString("Name:_____________________________", 160, 40);
+		 * graphics.drawString("Sputum Collection Date:______________", 160,
+		 * 60); graphics.drawString("Sputum Submission Form Submitted \u2610",
+		 * 160, 80); graphics.drawString("Sputum Results Submitted \u2610", 160,
+		 * 100);
+		 */graphics.drawLine(0, 0, 0, matrixHeight + 5);
+		graphics.drawLine(matrixWidth + 5, 0, matrixWidth + 5, matrixHeight + 5);
+		graphics.drawLine(0, 0, matrixWidth + 5, 0);
+		graphics.drawLine(0, 0, 0, matrixHeight + 5);
+		// Paint and save the image using the ByteMatrix
+		for (int i = 0; i < matrixHeight; i++) {
+			for (int j = 0; j < matrixHeight; j++) {
+				if (byteMatrix.get(i, j)) {
+					graphics.fillRect((i/* +40 */), j, 1, 1);
+				}
+			}
+
 		}
-	    }
-
+		// Write the image on file
+		File qrFile = new File(filePath);
+		ImageIO.write(image, fileType, qrFile);
 	}
-	// Write the image on file
-	File qrFile = new File(filePath);
-	ImageIO.write(image, fileType, qrFile);
-    }
 }
