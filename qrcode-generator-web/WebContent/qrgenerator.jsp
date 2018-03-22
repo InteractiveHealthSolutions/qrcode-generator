@@ -579,7 +579,7 @@ function isAlphaNumeric(e) {
 						<tr id="duplicateChk">
 							<th>Allow Duplicates</th>
 							<td style="padding-left: 23px"><input id="duplicateBox"
-								type="checkbox" name="duplicates"
+								type="checkbox" name="duplicates" disabled="disabled"
 								<%=("on".equals(duplicates) ? "checked" : "")%>></td>
 						</tr>
 
