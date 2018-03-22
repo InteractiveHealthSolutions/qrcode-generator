@@ -10,7 +10,7 @@ Interactive Health Solutions, hereby disclaims all copyright interest in this pr
 
 package com.ihsinformatics.qrgenerator;
 
-import java.util.Properties;
+import java.awt.PageAttributes.OrientationRequestedType;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -30,10 +31,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import com.ihsinformatics.qrgenerator.util.PdfUtil;
+import com.ihsinformatics.qrgenerator.util.ZipUtil;
 import com.ihsinformatics.util.VersionUtil;
-import com.itextpdf.text.pdf.qrcode.GF256;
+import com.itextpdf.text.DocumentException;
 
 /**
  * Servlet implementation class QrGenerator
@@ -49,7 +51,7 @@ public class QrGeneratorServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -875504184015776771L;
 	VersionUtil version = new VersionUtil(false, true, false, 0, 9, 1);
-	
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -61,28 +63,26 @@ public class QrGeneratorServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		getServletContext().getRequestDispatcher("/qrgenerator.jsp").forward(
-				request, response);
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		getServletContext().getRequestDispatcher("/qrgenerator.jsp").forward(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		Properties property = new Properties();
-		InputStream propFile = QrGeneratorServlet.class
-				.getResourceAsStream("/qrgenerator.properties");
-		boolean allowDuplicates = (request.getParameter("duplicates") != null) ? true
-				: false;
-		
-		boolean checkDigit = (request.getParameter("checkdigitBox") != null) ? true
-				: false;
+		InputStream propFile = QrGeneratorServlet.class.getResourceAsStream("/qrgenerator.properties");
+		boolean allowDuplicates = (request.getParameter("duplicates") != null) ? true : false;
+
+		boolean checkDigit = (request.getParameter("checkdigitBox") != null) ? true : false;
 		String typeSelection = request.getParameter("typeSelection");
 
 		String appendDate = request.getParameter("appendDate");
@@ -90,7 +90,7 @@ public class QrGeneratorServlet extends HttpServlet {
 		int range = 0;
 		String prefix = request.getParameter("prefix");
 		int length = Integer.parseInt(request.getParameter("serialNumberList"));
-		int copiesImage = Integer.parseInt(request.getParameter("copiesList"));
+		int imageCopies = Integer.parseInt(request.getParameter("copiesList"));
 		int columnLimit = Integer.parseInt(request.getParameter("column"));
 		Date date = null;
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -98,22 +98,19 @@ public class QrGeneratorServlet extends HttpServlet {
 		String partialDate = request.getParameter("date");
 		String pageType = request.getParameter("pagetype");
 		String pageOrientation = request.getParameter("pageorientation");
-		boolean alphanumeric = (request.getParameter("alphanumeric") == null) ? false
-				: true;
-		boolean casesensitive = (request.getParameter("casesensitive") == null) ? false
-				: true;
+		boolean alphanumeric = (request.getParameter("alphanumeric") == null) ? false : true;
+		boolean casesensitive = (request.getParameter("casesensitive") == null) ? false : true;
 		String Stringrange = request.getParameter("rangeForRandom");
 		property.load(propFile);
 
-		String url = property.getProperty(PropertyName.CONNECTION_URL);
-		String dbName = property.getProperty(PropertyName.DB_NAME);
-		String driverName = property.getProperty(PropertyName.JDBC_DRIVER);
-		String userName = property.getProperty(PropertyName.USERNAME);
-		String password = property.getProperty(PropertyName.PASSWORD);
+		String url = property.getProperty(Constant.CONNECTION_URL);
+		String dbName = property.getProperty(Constant.DB_NAME);
+		String driverName = property.getProperty(Constant.JDBC_DRIVER);
+		String userName = property.getProperty(Constant.USERNAME);
+		String password = property.getProperty(Constant.PASSWORD);
 
-		NumberGenerator numberGenerator = new NumberGenerator(url, dbName,
-				driverName, userName, password);
-		List<String> numberList = new ArrayList<String>();
+		NumberGenerator numberGenerator = new NumberGenerator(url, dbName, driverName, userName, password);
+		List<String> numberList = new ArrayList<>();
 
 		if (partialDate != null) {
 			try {
@@ -128,61 +125,62 @@ public class QrGeneratorServlet extends HttpServlet {
 			int from = Integer.parseInt(request.getParameter("from"));
 			int to = Integer.parseInt(request.getParameter("to"));
 			if (prefix == null && appendDate == null) {
-				numberList = numberGenerator.generateSerial(length, from, to,
-						allowDuplicates, checkDigit);
+				numberList = numberGenerator.generateSerial(length, from, to, allowDuplicates, checkDigit);
 			} else if (prefix != null && appendDate == null) {
-				numberList = numberGenerator.generateSerial(prefix, length,
-						from, to, allowDuplicates, checkDigit);
+				numberList = numberGenerator.generateSerial(prefix, length, from, to, allowDuplicates, checkDigit);
 			} else {
-				numberList = numberGenerator.generateSerial(prefix, length,
-						from, to, date, dateFormat, allowDuplicates, checkDigit);
+				numberList = numberGenerator.generateSerial(prefix, length, from, to, date, dateFormat, allowDuplicates,
+						checkDigit);
 			}
 		} else {
 			range = Integer.parseInt(Stringrange);
 			if (prefix == null && appendDate == null) {
 				try {
-					numberList = numberGenerator.generateRandom(length, range,
-							alphanumeric, casesensitive, checkDigit);
+					numberList = numberGenerator.generateRandom(length, range, alphanumeric, casesensitive, checkDigit);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else if (prefix != null && appendDate == null) {
 				try {
-					numberList = numberGenerator.generateRandom(prefix, length,
-							range, alphanumeric, casesensitive, checkDigit);
+					numberList = numberGenerator.generateRandom(prefix, length, range, alphanumeric, casesensitive,
+							checkDigit);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
-				numberList = numberGenerator.generateRandom(prefix, length,
-						range, date, dateFormat, alphanumeric, casesensitive, checkDigit);
+				numberList = numberGenerator.generateRandom(prefix, length, range, date, dateFormat, alphanumeric,
+						casesensitive, checkDigit);
 			}
 		}
-		
 
 		if (numberList != null) {
 
 			PdfUtil pdfUtil = new PdfUtil();
-			
+
 			String fileName = "QrCode" + String.valueOf(new Date().getTime());
-			
-			if(fileType.equals("pdfButton")){
-				fileName+=".pdf";
-				byteArrayOutputStream = pdfUtil.generatePdf(numberList, 140, 140,
-						copiesImage, columnLimit,pageType,pageOrientation);
-			}
-			else{
-				fileName+=".zip";
+
+			if (fileType.equals("pdfButton")) {
+				fileName += ".pdf";
+				// byteArrayOutputStream = pdfUtil.generatePdf(numberList, 140,
+				// 140, imageCopies, columnLimit, pageType, pageOrientation);
+				try {
+					OrientationRequestedType orientation = pageOrientation.equalsIgnoreCase("portrait")
+							? OrientationRequestedType.PORTRAIT : OrientationRequestedType.LANDSCAPE;
+					byteArrayOutputStream = pdfUtil.generatePdf(numberList.toArray(new String[] {}), orientation,
+							columnLimit, imageCopies, 140);
+				} catch (DocumentException e) {
+					e.printStackTrace();
+				}
+			} else {
+				fileName += ".zip";
 				byteArrayOutputStream = ZipUtil.getZip(numberList, 140, 140);
 			}
 
-			
 			if (numberList.size() != range && typeSelection.equals("random")) {
 
 				String rootPath = System.getProperty("user.dir");
-				File directory = new File(rootPath + File.separator + "webapps"
-						+ File.separator + "gf-qrgen-web" + File.separator
-						+ "QrGeneratorFiles");
+				File directory = new File(rootPath + File.separator + "webapps" + File.separator + "gf-qrgen-web"
+						+ File.separator + "QrGeneratorFiles");
 				if (!directory.exists()) {
 					directory.mkdir();
 				}
@@ -193,10 +191,8 @@ public class QrGeneratorServlet extends HttpServlet {
 				fileOutputStream.close();
 
 				String link = request.getRequestURI();
-				link = link.substring(0, 13) + File.separator
-						+ "QrGeneratorFiles" + File.separator + fileName;
-				String status = "Warning!! System was able to generate "
-						+ numberList.size() + " QR Codes only.";
+				link = link.substring(0, 13) + File.separator + "QrGeneratorFiles" + File.separator + fileName;
+				String status = "Warning!! System was able to generate " + numberList.size() + " QR Codes only.";
 				ServletContext sc = this.getServletContext();
 				RequestDispatcher rd = sc.getRequestDispatcher("/");
 				request.setAttribute("linkDownload", link);
@@ -208,16 +204,14 @@ public class QrGeneratorServlet extends HttpServlet {
 
 			else {
 				response.setHeader("Expires", "0");
-				response.setHeader("Cache-Control",
-						"must-revalidate, post-check=0, pre-check=0");
+				response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
 				response.setHeader("Pragma", "public");
-				if(fileType.equals("pdfButton"))
+				if (fileType.equals("pdfButton"))
 					response.setContentType("application/pdf");
 				else
 					response.setContentType("application/zip");
-				
-				response.setHeader("Content-Disposition",
-						"attachment; filename=" + fileName);
+
+				response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 				OutputStream os = response.getOutputStream();
 				byteArrayOutputStream.writeTo(os);
 				os.flush();

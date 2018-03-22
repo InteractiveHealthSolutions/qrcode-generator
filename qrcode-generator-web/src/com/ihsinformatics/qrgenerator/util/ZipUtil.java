@@ -1,4 +1,4 @@
-package com.ihsinformatics.qrgenerator;
+package com.ihsinformatics.qrgenerator.util;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;

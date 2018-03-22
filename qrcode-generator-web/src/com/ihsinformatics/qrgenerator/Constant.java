@@ -14,7 +14,8 @@ package com.ihsinformatics.qrgenerator;
  * @author Haris Asif - haris.asif@ihsinformatics.com
  *
  */
-public class PropertyName {
+public class Constant {
+	public static final String FILE_AUTHOR = "Interactive Health Solutions (Pvt) Ltd.";
 	public static final String JDBC_DRIVER = "JDBC.driver";
 	public static final String CONNECTION_URL = "qrgenerator.db.url";
 	public static final String USERNAME = "qrgenerator.user";
