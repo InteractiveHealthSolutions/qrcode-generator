@@ -1,14 +1,10 @@
-package com.ihsinformatics.qrgenerator;
+package com.ihsinformatics.qrgenerator.util;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.File;
 import java.util.Hashtable;
-
-import javax.imageio.ImageIO;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -21,7 +17,7 @@ public class QrCodeImageUtil {
 
 	public static BufferedImage drawQrImage(String str, int width, int height,
 			int length) {
-		Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<EncodeHintType, ErrorCorrectionLevel>();
+		Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
 		hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 		QRCodeWriter qrCodeWriter = new QRCodeWriter();
 		BitMatrix byteMatrix = null;
@@ -55,7 +51,7 @@ public class QrCodeImageUtil {
 		return null;
 	}
 
-	public static Image getImageForPdf(String str, int width, int height,
+	public static Image convertToImage(String str, int width, int height,
 			int length) {
 		BufferedImage image = drawQrImage(str, width, height, length);
 		Image itextImage = null;
