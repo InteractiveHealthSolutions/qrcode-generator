@@ -12,7 +12,6 @@ package com.ihsinformatics.qrgenerator.util;
 import java.awt.PageAttributes.OrientationRequestedType;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
-import java.util.List;
 
 import com.ihsinformatics.qrgenerator.Constant;
 import com.itextpdf.text.Document;
@@ -81,7 +80,6 @@ public class PdfUtil {
 		document.addAuthor(Constant.FILE_AUTHOR);
 		PdfPTable table;
 		int maxColumns = 0;
-		document.open();
 		PdfWriter pdfWriter = PdfWriter.getInstance(document, outputStream);
 		// Set table parameters according to orientation
 		if (orientation == OrientationRequestedType.PORTRAIT) {
@@ -136,6 +134,7 @@ public class PdfUtil {
 				count++;
 			}
 		}
+		document.open();
 		document.newPage();
 		document.add(table);
 		document.close();
@@ -192,87 +191,4 @@ public class PdfUtil {
 		return length.intValue();
 	}
 
-	/**
-	 * 
-	 */
-	public ByteArrayOutputStream generatePdf(List<String> lines, int width, int height, int imageCopies,
-			int columnLimit, String pageType, String orientation) {
-
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		Document document = new Document();
-		PdfPTable table = new PdfPTable(6);
-		document.addAuthor(Constant.FILE_AUTHOR);
-		document.addCreationDate();
-		int maxColumns = 0;
-		if (pageType.equals("A4")) {
-			if (orientation.equals("portrait")) {
-				maxColumns = 6;
-				document.setPageSize(PageSize.A4);
-				table = new PdfPTable(maxColumns);
-				table.setTotalWidth(PageSize.A4.getWidth());
-				document.setMargins(2, -148, 20, 2);
-			} else {
-				maxColumns = 8;
-				document.setPageSize(PageSize.A4.rotate());
-				table = new PdfPTable(maxColumns);
-				table.setTotalWidth(PageSize.A4.rotate().getWidth());
-				document.setMargins(2, -200, 29, 20);
-			}
-		}
-		try {
-			PdfWriter pdfWriter = PdfWriter.getInstance(document, byteArrayOutputStream);
-			HeaderFooterEvent event = new HeaderFooterEvent();
-			pdfWriter.setBoxSize("art", new Rectangle(36, 54, 559, 788));
-			pdfWriter.setPageEvent(event);
-			document.open();
-		} catch (DocumentException e2) {
-			e2.printStackTrace();
-		}
-
-		table.setHorizontalAlignment(Element.ALIGN_LEFT);
-
-		int length = 0;
-		int count = 0;
-
-		for (String line : lines) {
-			length = getTextImageLength(line);
-			Image itextImage = QrCodeImageUtil.convertToImage(line, width, height, length);
-			int currentColumnCount = 0;
-			for (int i = 0; i < imageCopies; i++) {
-				currentColumnCount++;
-				PdfPCell cell = new PdfPCell(itextImage);
-				cell.setBorder(Rectangle.NO_BORDER);
-				count++;
-				table.addCell(cell);
-			}
-			if (currentColumnCount == columnLimit) {
-				for (int i = columnLimit; i < maxColumns; i++) {
-					PdfPCell cell = new PdfPCell(new Phrase());
-					cell.setBorder(Rectangle.NO_BORDER);
-					table.addCell(cell);
-				}
-				currentColumnCount = 0;
-			}
-		}
-		for (int i = 0; i < 6; i++) {
-			if (count % maxColumns != 0) {
-				PdfPCell cell = new PdfPCell(new Phrase());
-				cell.setBorder(Rectangle.NO_BORDER);
-				table.addCell(cell);
-				count++;
-			}
-		}
-		try {
-			document.add(table);
-			document.close();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return byteArrayOutputStream;
-	}
 }

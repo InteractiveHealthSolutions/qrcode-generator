@@ -542,7 +542,7 @@ function isAlphaNumeric(e) {
 
 			<div class="col-md-12 column">
 				<h3 align="center">
-					QR Code Generator <font size="1">Version 1.2.0</font>
+					QR Code Generator <font size="1">Version 1.3.0</font>
 				</h3>
 				<form method="POST" action="/qrcode-generator-web/qrgenerator"
 					id="qrGenForm">
