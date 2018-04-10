@@ -10,8 +10,6 @@ Interactive Health Solutions, hereby disclaims all copyright interest in this pr
 
 package com.ihsinformatics.qrgenerator;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,23 +31,19 @@ public class NumberGenerator {
 	/**
 	 * Default Constructor
 	 */
-	public NumberGenerator(String url, String dbName, String driverName,
-			String userName, String password) {
+	public NumberGenerator(String url, String dbName, String driverName, String userName, String password) {
 		dbUtil = new DatabaseUtil();
 		dbUtil.setConnection(url, dbName, driverName, userName, password);
 	}
 
-	public List<String> generateSerial(int length, int rangeFrom, int rangeTo,
-			boolean allowDuplicates, boolean allowCheckDigit) {
-		return generateSerial(null, length, rangeFrom, rangeTo,
-				allowDuplicates, allowCheckDigit);
+	public List<String> generateSerial(int length, int rangeFrom, int rangeTo, boolean allowDuplicates,
+			boolean allowCheckDigit) {
+		return generateSerial(null, length, rangeFrom, rangeTo, allowDuplicates, allowCheckDigit);
 	}
 
-	public List<String> generateSerial(String prefix, int length,
-			int rangeFrom, int rangeTo, boolean allowDuplicates,
+	public List<String> generateSerial(String prefix, int length, int rangeFrom, int rangeTo, boolean allowDuplicates,
 			boolean allowCheckDigit) {
-		return generateSerial(prefix, length, rangeFrom, rangeTo, null, null,
-				allowDuplicates, allowCheckDigit);
+		return generateSerial(prefix, length, rangeFrom, rangeTo, null, null, allowDuplicates, allowCheckDigit);
 	}
 
 	/**
@@ -63,129 +57,94 @@ public class NumberGenerator {
 	 * @param date
 	 * @return
 	 */
-	public List<String> generateSerial(String prefix, int length,
-			int rangeFrom, int rangeTo, Date date, String dateFormat,
-			boolean allowDuplicates, boolean allowCheckDigit) {
-		List<String> codes = new ArrayList<String>();
-		String serialFormat = "%0" + String.valueOf(length) + "d";
+	public List<String> generateSerial(String prefix, int length, int rangeFrom, int rangeTo, Date date,
+			String dateFormat, boolean allowDuplicates, boolean allowCheckDigit) {
+		List<String> codes = new ArrayList<>();
+		String serialFormat = "%0" + (length) + "d";
 		String datePart = "";
-		ResultSet rs = null;
 		String prefixPart = "";
 		if (date != null) {
-			datePart = DateTimeUtil.formatDate(date, dateFormat);
+			datePart = DateTimeUtil.toString(date, dateFormat);
 		}
 		if (prefix != null) {
 			prefixPart = prefix;
 		}
 
-		String start = prefixPart + datePart
-				+ String.format(serialFormat, rangeFrom);
-		String end = prefixPart + datePart
-				+ String.format(serialFormat, rangeTo);
-
-		String que = "select * from _identifier where id BETWEEN '" + start
-				+ "%' AND '" + end + "%';";
+		String start = prefixPart + datePart + String.format(serialFormat, rangeFrom);
+		String end = prefixPart + datePart + String.format(serialFormat, rangeTo);
 		try {
-			Object res = dbUtil.runCommand(CommandType.SELECT, que);
-			if (allowDuplicates == false && !res.equals("false")) {
+			String que = "select * from _identifier where id BETWEEN '" + start + "%' AND '" + end + "%';";
+			Object res = dbUtil.runCommandWithException(CommandType.SELECT, que);
+			if (!(allowDuplicates || res.equals("false"))) {
 				return null;
 			}
-
-		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
 		}
 
 		for (int i = rangeFrom; i <= rangeTo; i++) {
-			String newCode = prefixPart + datePart
-					+ String.format(serialFormat, i);
+			String newCode = prefixPart + datePart + String.format(serialFormat, i);
 			try {
 				if (allowCheckDigit == true) {
 					newCode += "-" + ChecksumUtil.getLuhnChecksum(newCode);
 				}
-				String query = "insert into _identifier values ('" + newCode
-						+ "', current_timestamp())";
-				dbUtil.runCommand(CommandType.INSERT, query);
+				String query = "insert into _identifier values ('" + newCode + "', current_timestamp())";
+				dbUtil.runCommandWithException(CommandType.INSERT, query);
 				codes.add(newCode);
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.out.println("Unable to insert " + newCode);
 			}
 		}
 		return codes;
 	}
 
-	
-	public List<String> generateRandom(int length, int range,
-			boolean alphanumeric, boolean casesensitive, boolean allowCheckDigit)
-			throws Exception {
-		return generateRandom(null, length, range, null, null, alphanumeric,
-				casesensitive, allowCheckDigit);
+	public List<String> generateRandom(int length, int range, boolean alphanumeric, boolean casesensitive,
+			boolean allowCheckDigit) {
+		return generateRandom(null, length, range, null, null, alphanumeric, casesensitive, allowCheckDigit);
 	}
 
-	public List<String> generateRandom(String prefix, int length, int range,
-			boolean alphanumeric, boolean casesensitive, boolean allowCheckDigit)
-			throws Exception {
-		return generateRandom(prefix, length, range, null, null, alphanumeric,
-				casesensitive, allowCheckDigit);
+	public List<String> generateRandom(String prefix, int length, int range, boolean alphanumeric,
+			boolean casesensitive, boolean allowCheckDigit) {
+		return generateRandom(prefix, length, range, null, null, alphanumeric, casesensitive, allowCheckDigit);
 	}
 
-	public List<String> generateRandom(String prefix, int length, int range,
-			Date date, String dateFormat, boolean alphanumeric,
-			boolean caseSensitive, boolean allowCheckDigit) {
-
+	public List<String> generateRandom(String prefix, int length, int range, Date date, String dateFormat,
+			boolean alphanumeric, boolean caseSensitive, boolean allowCheckDigit) {
 		String prefixPart = "";
 		String newCode = "";
 		String datePart = "";
 		int countValue = 0;
-
-		List<String> codes = new ArrayList<String>();
-
+		List<String> codes = new ArrayList<>();
 		if (prefix != null) {
 			prefixPart = prefix;
 		}
-
 		if (date != null) {
-			datePart = DateTimeUtil.formatDate(date, dateFormat);
+			datePart = DateTimeUtil.toString(date, dateFormat);
 		}
-
 		Double failRange = Math.pow(length, length);
 		int totalAttemps = failRange.intValue();
 		StringUtil strUtil = new StringUtil();
 		while (codes.size() != range) {
 			if (countValue <= totalAttemps) {
-
-				newCode = prefixPart
-						+ datePart
-						+ strUtil.randomString(length, true, alphanumeric,
-								caseSensitive);
+				newCode = prefixPart + datePart + strUtil.randomString(length, true, alphanumeric, caseSensitive);
 				try {
 
 					if (allowCheckDigit == true) {
 						newCode += "-" + ChecksumUtil.getLuhnChecksum(newCode);
 					}
-					String query = "insert into _identifier values ('"
-							+ newCode + "', current_timestamp())";
-					Object result = dbUtil
-							.runCommand(CommandType.INSERT, query);
+					String query = "insert into _identifier values ('" + newCode + "', current_timestamp())";
+					Object result = dbUtil.runCommandWithException(CommandType.INSERT, query);
 					if (!result.toString().equals("1")) {
 						countValue++;
-					}
-
-					else {
+					} else {
 						codes.add(newCode);
 						countValue = 0;
 					}
-
 				} catch (Exception e) {
-					e.printStackTrace();
+					System.out.println("Unable to insert " + newCode);
 				}
-			}
-
-			else if (codes.size() > 0) {
+			} else if (codes.isEmpty()) {
 				return codes;
-			}
-
-			else {
+			} else {
 				return null;
 			}
 		}
