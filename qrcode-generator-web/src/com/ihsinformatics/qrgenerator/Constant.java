@@ -11,14 +11,17 @@ Interactive Health Solutions, hereby disclaims all copyright interest in this pr
 package com.ihsinformatics.qrgenerator;
 
 /**
- * @author Haris Asif - haris.asif@ihsinformatics.com
+ * @author haris.asif@ihsinformatics.com
  *
  */
 public class Constant {
-	public static final String FILE_AUTHOR = "Interactive Health Solutions (Pvt) Ltd.";
-	public static final String JDBC_DRIVER = "JDBC.driver";
-	public static final String CONNECTION_URL = "qrgenerator.db.url";
-	public static final String USERNAME = "qrgenerator.user";
-	public static final String PASSWORD = "qrgenerator.password";
-	public static final String DB_NAME = "qrgenerator.dbname";
+    public static final String FILE_AUTHOR = "Interactive Health Solutions (Pvt) Ltd.";
+    public static final String JDBC_DRIVER = "JDBC.driver";
+    public static final String CONNECTION_URL = "qrgenerator.db.url";
+    public static final String USERNAME = "qrgenerator.user";
+    public static final String PASSWORD = "qrgenerator.password";
+    public static final String DB_NAME = "qrgenerator.dbname";
+    
+    private Constant() {
+    }
 }
