@@ -53,11 +53,33 @@ public class QrGeneratorServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
 
+    private String url;
+
+    private String dbName;
+
+    private String driverName;
+
+    private String userName;
+
+    private String password;
+
+    private String rootDirectory;
+
     /**
+     * @throws IOException
      * @see HttpServlet#HttpServlet()
      */
-    public QrGeneratorServlet() {
+    public QrGeneratorServlet() throws IOException {
 	super();
+	InputStream propFile = QrGeneratorServlet.class.getResourceAsStream("/qrgenerator.properties");
+	Properties props = new Properties();
+	props.load(propFile);
+	url = props.getProperty(Constant.CONNECTION_URL);
+	dbName = props.getProperty(Constant.DB_NAME);
+	driverName = props.getProperty(Constant.JDBC_DRIVER);
+	userName = props.getProperty(Constant.USERNAME);
+	password = props.getProperty(Constant.PASSWORD);
+	rootDirectory = props.getProperty(Constant.ROOT_DIR);
     }
 
     /**
@@ -79,8 +101,6 @@ public class QrGeneratorServlet extends HttpServlet {
 	    throws ServletException, IOException {
 
 	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-	Properties property = new Properties();
-	InputStream propFile = QrGeneratorServlet.class.getResourceAsStream("/qrgenerator.properties");
 	boolean allowDuplicates = (request.getParameter("duplicates") != null);
 
 	boolean checkDigit = (request.getParameter("checkdigitBox") != null);
@@ -97,18 +117,11 @@ public class QrGeneratorServlet extends HttpServlet {
 	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	String dateFormat = request.getParameter("dateFormatList");
 	String partialDate = request.getParameter("date");
-	//String pageType = request.getParameter("pagetype");
+	// String pageType = request.getParameter("pagetype");
 	String pageOrientation = request.getParameter("pageorientation");
 	boolean alphanumeric = (request.getParameter("alphanumeric") == null);
 	boolean casesensitive = (request.getParameter("casesensitive") == null);
 	String stringRange = request.getParameter("rangeForRandom");
-	property.load(propFile);
-
-	String url = property.getProperty(Constant.CONNECTION_URL);
-	String dbName = property.getProperty(Constant.DB_NAME);
-	String driverName = property.getProperty(Constant.JDBC_DRIVER);
-	String userName = property.getProperty(Constant.USERNAME);
-	String password = property.getProperty(Constant.PASSWORD);
 
 	NumberGenerator numberGenerator = new NumberGenerator(url, dbName, driverName, userName, password);
 	List<String> numberList = new ArrayList<>();
@@ -173,9 +186,7 @@ public class QrGeneratorServlet extends HttpServlet {
 	    }
 
 	    if (numberList.size() != range && typeSelection.equals("random")) {
-		String rootPath = System.getProperty("user.dir");
-		File directory = new File(rootPath + File.separator + "webapps" + File.separator + "gf-qrgen-web"
-			+ File.separator + "QrGeneratorFiles");
+		File directory = new File(rootDirectory + "QrGeneratorFiles");
 		if (!directory.exists()) {
 		    directory.mkdir();
 		}

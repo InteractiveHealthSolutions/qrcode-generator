@@ -5,7 +5,7 @@
 	<groupId>qrcode-generator-web</groupId>
 	<artifactId>qrcode-generator-web</artifactId>
 	<version>1.0.0</version>
-	<packaging>pom</packaging>
+	<packaging>war</packaging>
 	<name>QR-Code enerator</name>
 	<description>General purpose QR-Code generator web app</description>
 	<build>
