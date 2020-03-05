@@ -141,8 +141,8 @@ public class NumberGenerator {
 		try {
 
 		    if (allowCheckDigit) {
-			newCode.append("-");
-			newCode.append(ChecksumUtil.getLuhnChecksum(newCode.toString()));
+			int check = ChecksumUtil.getLuhnChecksum(newCode.toString());
+			newCode.append("-").append(check);
 		    }
 		    String query = "insert into _identifier values ('" + newCode + "', current_timestamp())";
 		    Object result = dbUtil.runCommandWithException(CommandType.INSERT, query);
